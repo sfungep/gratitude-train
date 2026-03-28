@@ -47,10 +47,7 @@ body {
 .hd-title { font-size: 1.05rem; font-weight: 900; letter-spacing: 2px; }
 .hd-sub   { font-size: 0.72rem; opacity: .85; }
 .hd-right { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-wrap: wrap; }
-.prog-wrap { display: flex; flex-direction: column; gap: 3px; min-width: 130px; }
-.prog-label { font-size: .7rem; opacity: .9; }
-.prog-bar   { background: rgba(255,255,255,.25); border-radius: 10px; height: 7px; overflow: hidden; }
-.prog-fill  { height: 100%; background: var(--yellow); border-radius: 10px; transition: width .5s; }
+
 .lang-sel {
   appearance: none;
   background: rgba(255,255,255,.18);
@@ -496,10 +493,7 @@ body {
       </div>
     </div>
     <div class="hd-right">
-      <div class="prog-wrap">
-        <div class="prog-label" id="progLabel">完成進度：0%</div>
-        <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
-      </div>
+
       <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
         <span style="font-size:.72rem;opacity:.85;">🎙</span>
         <select class="lang-sel" id="speechLang">
@@ -764,7 +758,7 @@ body {
   </div>
 
   <div style="text-align:center;color:#bbb;font-size:.73rem;padding-bottom:6px;">
-    © 教育局教育心理服務(新界西)組 二零二四年 · 版權為教育局所有，歡迎作非牟利教育用途
+    © 教育局教育心理服務(新界西)組 二零二六年 · 版權為教育局所有，歡迎作非牟利教育用途
   </div>
 
 </main>
@@ -1043,13 +1037,6 @@ const ALL_TA = [
   'ta_who'
 ];
 function updateProgress() {
-  const filled = ALL_TA.filter(id => {
-    const el = document.getElementById(id);
-    return el && el.value.trim().length > 0;
-  }).length;
-  const pct = Math.min(100, Math.round(filled / ALL_TA.length * 100));
-  document.getElementById('progFill').style.width = pct + '%';
-  document.getElementById('progLabel').textContent = '完成進度：' + pct + '%';
 }
 
 /* ══════════════════════════════════════════
