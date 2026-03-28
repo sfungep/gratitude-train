@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>感恩列車 — 幸福站練習</title>
+<style>
+/* ══ Reset ══ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+  background: #e8f4fd;
+  color: #333;
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* ══ CSS 變數 ══ */
+:root {
+  --blue-deep: #1a5fa0;
+  --blue-mid:  #3d8fce;
+  --yellow:    #f5c518;
+  --orange:    #f57c00;
+  --pink:      #e91e8c;
+  --teal:      #00897b;
+  --green:     #43a047;
+  --purple:    #7b1fa2;
+  --radius:    16px;
+}
+
+/* ══ Header ══ */
+.top-header {
+  background: linear-gradient(135deg, var(--blue-deep) 0%, #2d7dd2 100%);
+  color: #fff;
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.2);
+}
+.header-inner {
+  max-width: 960px; margin: 0 auto;
+  padding: 11px 18px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.hd-logo { display: flex; align-items: center; gap: 9px; }
+.hd-logo .icon { font-size: 1.7rem; }
+.hd-title { font-size: 1.05rem; font-weight: 900; letter-spacing: 2px; }
+.hd-sub   { font-size: 0.72rem; opacity: .85; }
+.hd-right { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-wrap: wrap; }
+.prog-wrap { display: flex; flex-direction: column; gap: 3px; min-width: 130px; }
+.prog-label { font-size: .7rem; opacity: .9; }
+.prog-bar   { background: rgba(255,255,255,.25); border-radius: 10px; height: 7px; overflow: hidden; }
+.prog-fill  { height: 100%; background: var(--yellow); border-radius: 10px; transition: width .5s; }
+.lang-sel {
+  appearance: none;
+  background: rgba(255,255,255,.18);
+  border: 1.5px solid rgba(255,255,255,.5);
+  color: #fff; border-radius: 20px;
+  padding: 5px 10px; font-size: .76rem;
+  font-family: inherit; font-weight: 700; cursor: pointer; outline: none;
+}
+.lang-sel option { background: var(--blue-deep); }
+
+/* 錄音橫幅 */
+#recBanner {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: #e53935; color: #fff;
+  text-align: center; font-size: .85rem; font-weight: 700;
+  padding: 6px; z-index: 999; pointer-events: none;
+  transform: translateY(-100%); transition: transform .25s;
+}
+#recBanner.on { transform: translateY(0); }
+
+/* ══ 主體 ══ */
+.wrapper { max-width: 960px; margin: 0 auto; padding: 20px 14px 30px; }
+
+/* ══ 封面卡片 ══ */
+.cover-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(26,95,160,.1);
+  padding: 32px 28px 28px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.cover-card .train-big { font-size: 3.8rem; margin-bottom: 8px; }
+.cover-card h1 { font-size: 1.9rem; font-weight: 900; color: var(--blue-deep); letter-spacing: 3px; }
+.cover-card .sub { font-size: 1rem; color: #777; margin: 5px 0 22px; }
+.cover-card .name-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; flex-wrap: wrap; margin-bottom: 10px;
+}
+.cover-card .name-row span { font-size: 1rem; color: #555; }
+.name-input {
+  font-size: 1.15rem; font-weight: 700; text-align: center;
+  border: none; border-bottom: 3px solid var(--blue-mid);
+  background: transparent; padding: 5px 8px;
+  outline: none; width: 180px; font-family: inherit;
+  color: var(--blue-deep);
+}
+.cover-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg,#f5c518,#ffa726);
+  color: #333; border-radius: 30px;
+  padding: 7px 22px; font-size: .9rem; font-weight: 800;
+  margin-top: 16px;
+}
+
+/* ══ 區段標題 ══ */
+.section-hd {
+  background: linear-gradient(135deg,var(--blue-deep),#2d7dd2);
+  color: #fff; border-radius: var(--radius) var(--radius) 0 0;
+  padding: 16px 22px;
+}
+.section-hd h2 { font-size: 1.1rem; font-weight: 900; }
+.section-hd p  { font-size: .82rem; opacity: .9; margin-top: 3px; }
+.intro-card {
+  background: #fff;
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: 0 4px 20px rgba(26,95,160,.08);
+  padding: 18px 22px 20px;
+  margin-bottom: 22px;
+  font-size: .9rem; line-height: 1.7; color: #555;
+}
+
+/* ══ 六格網格 ══ */
+.cells-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+@media(max-width:680px){ .cells-grid { grid-template-columns: 1fr 1fr; } }
+@media(max-width:440px){ .cells-grid { grid-template-columns: 1fr; } }
+
+/* ══ 每個感恩格 ══ */
+.cell {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.cell-head { padding: 12px 14px 10px; color: #fff; }
+.cell-head h3 { font-size: .95rem; font-weight: 900; }
+.cell-head p  { font-size: .76rem; opacity: .9; margin-top: 2px; line-height: 1.4; }
+.c1 .cell-head { background: linear-gradient(135deg,#1565c0,#1e88e5); }
+.c2 .cell-head { background: linear-gradient(135deg,#00695c,#00897b); }
+.c3 .cell-head { background: linear-gradient(135deg,#ad1457,#e91e8c); }
+.c4 .cell-head { background: linear-gradient(135deg,#e65100,#f57c00); }
+.c5 .cell-head { background: linear-gradient(135deg,#6a1b9a,#9c27b0); }
+.c6 .cell-head { background: linear-gradient(135deg,#2e7d32,#43a047); }
+
+/* 分頁標籤 */
+.tab-bar {
+  display: flex; border-bottom: 2px solid #eee;
+  background: #fafafa;
+}
+.tab-btn {
+  flex: 1; padding: 8px 4px; border: none;
+  background: transparent; font-family: inherit;
+  font-size: .78rem; font-weight: 700; color: #999;
+  cursor: pointer; transition: all .18s;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+}
+.tab-btn:hover { color: #555; }
+.tab-btn.active { color: var(--blue-deep); border-bottom-color: var(--blue-deep); background: #fff; }
+.c3 .tab-btn.active { color: var(--pink); border-bottom-color: var(--pink); }
+.c4 .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+.c5 .tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
+.c6 .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* 面板 */
+.panel { display: none; padding: 12px; flex: 1; flex-direction: column; min-height: 180px; }
+.panel.active { display: flex; }
+
+/* 文字面板 */
+.panel-text textarea {
+  flex: 1; width: 100%;
+  border: 2px solid #d0e8f8; border-radius: 10px;
+  padding: 9px 40px 9px 10px;
+  font-size: .88rem; font-family: inherit;
+  background: #f8fcff; resize: vertical; min-height: 130px;
+  outline: none; transition: border-color .2s;
+  line-height: 1.6; color: #333;
+}
+.panel-text textarea:focus { border-color: var(--blue-mid); background: #fff; }
+
+/* 麥克風包裝 */
+.mic-wrap-ta { position: relative; display: flex; flex-direction: column; flex: 1; }
+.mic-wrap-ta textarea { flex: 1; }
+.mic-btn-ta {
+  position: absolute; top: 8px; right: 8px;
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid var(--blue-mid); background: #fff;
+  color: var(--blue-mid); font-size: .82rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .2s; z-index: 2; outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.mic-btn-ta:hover { background: #e8f4fd; }
+.mic-btn-ta.recording {
+  background: #e53935; border-color: #e53935; color: #fff;
+  animation: pulse-mic 1s ease-in-out infinite;
+}
+@keyframes pulse-mic {
+  0%  { box-shadow: 0 0 0 0   rgba(229,57,53,.5); }
+  60% { box-shadow: 0 0 0 8px rgba(229,57,53,0);  }
+  100%{ box-shadow: 0 0 0 0   rgba(229,57,53,0);  }
+}
+
+/* 感覺圓圈 */
+.feel-row { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 0 2px; }
+.feel-chip {
+  padding: 5px 12px; border-radius: 20px;
+  border: 2px solid currentColor; background: #fff;
+  font-size: .78rem; font-weight: 700; cursor: pointer;
+  transition: all .18s; user-select: none;
+}
+.feel-chip.sel { background: currentColor; }
+.feel-chip.sel span { color: #fff !important; }
+.feel-chip span { display: block; }
+
+/* ══ 畫版面板 ══ */
+.panel-draw { flex-direction: column; gap: 8px; padding-bottom: 14px; }
+
+/* 工具列 */
+.draw-toolbar {
+  display: flex; align-items: center; gap: 5px;
+  flex-wrap: wrap; padding-bottom: 8px;
+  border-bottom: 1.5px solid #eee;
+}
+
+/* 顏色板 */
+.color-palette { display: flex; gap: 4px; flex-wrap: wrap; }
+.color-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  cursor: pointer; border: 2px solid #fff;
+  box-shadow: 0 0 0 1.5px #bbb;
+  transition: transform .15s, box-shadow .15s; flex-shrink: 0;
+}
+.color-dot:hover { transform: scale(1.18); }
+.color-dot.active { box-shadow: 0 0 0 3px var(--blue-deep); transform: scale(1.18); }
+
+.tool-sep { width: 1.5px; height: 22px; background: #ddd; margin: 0 2px; flex-shrink: 0; }
+
+/* 畫筆大小 */
+.size-group { display: flex; gap: 3px; align-items: center; }
+.size-btn {
+  border: 2px solid #bbb; background: #fff; border-radius: 50%;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .15s; flex-shrink: 0; padding: 0;
+}
+.size-btn .dot-inner { background: #444; border-radius: 50%; pointer-events: none; }
+.size-btn:hover, .size-btn.active { border-color: var(--blue-deep); background: #e8f4fd; }
+.size-btn.active .dot-inner { background: var(--blue-deep); }
+
+/* 工具按鈕 */
+.tool-btn {
+  border: 2px solid #bbb; background: #fff;
+  border-radius: 8px; padding: 4px 8px;
+  font-size: .7rem; font-weight: 700; cursor: pointer;
+  color: #555; transition: all .15s; white-space: nowrap;
+  font-family: inherit;
+}
+.tool-btn:hover { border-color: var(--blue-deep); color: var(--blue-deep); }
+.tool-btn.active { border-color: var(--orange); background: #fff3e0; color: var(--orange); }
+.tool-btn.danger { border-color: #e53935; color: #e53935; }
+.tool-btn.danger:hover { background: #ffebee; }
+
+/* Canvas 容器 — 固定高度，避免 flex 繼承失效 */
+.canvas-wrap {
+  border-radius: 10px;
+  border: 2px solid #d0e8f8;
+  overflow: hidden; background: #fff;
+  cursor: crosshair; position: relative;
+  height: 220px;           /* 固定高度，確保事件可觸發 */
+  flex-shrink: 0;
+}
+/* canvas 不設 CSS 尺寸，完全由 JS 控制 */
+.canvas-wrap canvas { display: block; touch-action: none; }
+.canvas-hint {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  color: #ccc; font-size: .8rem; pointer-events: none;
+  text-align: center; white-space: nowrap; user-select: none;
+}
+
+/* ══ 底部總結卡片 ══ */
+.summary-card {
+  background: #fff; border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(26,95,160,.08);
+  padding: 22px 24px 24px; margin-bottom: 20px;
+}
+.summary-card h3 {
+  font-size: 1rem; font-weight: 900; color: var(--blue-deep);
+  margin-bottom: 10px; display: flex; align-items: center; gap: 7px;
+}
+.summary-ta {
+  width: 100%; border: 2px solid #d0e8f8; border-radius: 10px;
+  padding: 10px 40px 10px 12px; font-size: .9rem;
+  font-family: inherit; background: #f8fcff;
+  resize: vertical; min-height: 72px; outline: none;
+  transition: border-color .2s; line-height: 1.6;
+}
+.summary-ta:focus { border-color: var(--blue-mid); background: #fff; }
+.express-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.express-chip {
+  padding: 9px 18px; border-radius: 30px;
+  border: 2.5px solid; font-size: .88rem;
+  font-weight: 700; cursor: pointer;
+  transition: all .18s; user-select: none; background: #fff;
+}
+.express-chip.e1 { border-color: var(--blue-mid); color: var(--blue-mid); }
+.express-chip.e2 { border-color: var(--teal); color: var(--teal); }
+.express-chip.e3 { border-color: var(--orange); color: var(--orange); }
+.express-chip.e1.sel { background: var(--blue-mid); color: #fff; }
+.express-chip.e2.sel { background: var(--teal); color: #fff; }
+.express-chip.e3.sel { background: var(--orange); color: #fff; }
+.reflection {
+  background: linear-gradient(135deg,#e8f4fd,#f0e8ff);
+  border-left: 5px solid var(--blue-deep);
+  border-radius: 0 12px 12px 0;
+  padding: 14px 18px; margin-top: 18px;
+  font-style: italic; color: #444;
+  font-size: .92rem; line-height: 1.7;
+}
+
+/* ══ 底部動作列 ══ */
+.action-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(10px);
+  padding: 10px 18px;
+  display: flex; justify-content: center; gap: 12px;
+  box-shadow: 0 -3px 16px rgba(0,0,0,.1); z-index: 150;
+}
+.btn {
+  padding: 10px 22px; border-radius: 30px; border: none;
+  font-size: .9rem; font-weight: 800; font-family: inherit;
+  cursor: pointer; display: flex; align-items: center; gap: 6px;
+  transition: transform .15s, box-shadow .15s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.15); }
+.btn-save  { background: #43a047; color: #fff; }
+.btn-load  { background: var(--teal); color: #fff; }
+.btn-print { background: var(--blue-deep); color: #fff; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 76px; left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: #2e7d32; color: #fff;
+  padding: 11px 26px; border-radius: 30px;
+  font-weight: 700; font-size: .9rem;
+  opacity: 0; transition: opacity .3s, transform .3s;
+  pointer-events: none; z-index: 300; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* 無語音支援提示 */
+.no-speech {
+  display: none; background: #fff3e0; border: 1.5px solid #ffcc80;
+  border-radius: 10px; padding: 9px 14px;
+  font-size: .8rem; color: #e65100; margin-bottom: 12px;
+}
+
+/* ══ 列印 ══ */
+@media print {
+  .action-bar, .top-header, #recBanner,
+  .mic-btn-ta, .lang-sel, .draw-toolbar, .tab-bar { display: none !important; }
+  body { background: #fff; padding: 0; }
+  .panel { display: flex !important; }
+  .panel-draw { display: none !important; }
+  .wrapper { padding: 0; }
+  .cells-grid { grid-template-columns: repeat(3,1fr) !important; }
+  .cell { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+}
+
+/* ══ 日期欄位 ══ */
+.date-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; margin-top: 10px;
+}
+.date-row span { font-size: .95rem; color: #555; }
+.date-input {
+  font-size: 1rem; font-weight: 700;
+  border: none; border-bottom: 3px solid var(--blue-mid);
+  background: transparent; padding: 5px 8px;
+  outline: none; font-family: inherit;
+  color: var(--blue-deep); cursor: pointer;
+}
+.date-input::-webkit-calendar-picker-indicator { cursor: pointer; opacity: .7; }
+
+/* ══ 感恩日誌 Overlay ══ */
+.journal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(10,30,60,.85);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 16px;
+  opacity: 0; pointer-events: none; transition: opacity .25s;
+}
+.journal-overlay.open { opacity: 1; pointer-events: all; }
+.journal-box {
+  background: #fff; border-radius: 20px;
+  width: 100%; max-width: 760px; max-height: 88vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  overflow: hidden;
+}
+.journal-hd {
+  background: linear-gradient(135deg,var(--blue-deep),#2d7dd2);
+  color: #fff; padding: 14px 20px;
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+.journal-hd h2 { flex: 1; font-size: 1.05rem; font-weight: 900; }
+.journal-close {
+  background: rgba(255,255,255,.2); border: none;
+  color: #fff; border-radius: 50%; width: 34px; height: 34px;
+  font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s; font-family: inherit;
+}
+.journal-close:hover { background: rgba(255,255,255,.35); }
+.journal-nav {
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px; padding: 10px 20px; border-bottom: 1.5px solid #eee;
+  background: #fafafa; flex-shrink: 0;
+}
+.jnav-btn {
+  background: var(--blue-deep); color: #fff;
+  border: none; border-radius: 50%; width: 36px; height: 36px;
+  font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s; font-family: inherit;
+}
+.jnav-btn:disabled { background: #ccc; cursor: default; }
+.jnav-info { font-size: .88rem; color: #555; font-weight: 700; min-width: 110px; text-align: center; }
+.jnav-del {
+  background: #fff; border: 2px solid #e53935; color: #e53935;
+  border-radius: 20px; padding: 5px 12px;
+  font-size: .75rem; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: all .15s; white-space: nowrap;
+}
+.jnav-del:hover { background: #ffebee; }
+.journal-body {
+  flex: 1; overflow-y: auto; padding: 18px 20px;
+}
+.journal-entry-hd {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px; flex-wrap: wrap;
+}
+.entry-badge {
+  background: linear-gradient(135deg,#f5c518,#ffa726);
+  color: #333; border-radius: 20px;
+  padding: 5px 16px; font-size: .85rem; font-weight: 800;
+}
+.entry-name { font-size: 1.05rem; font-weight: 900; color: var(--blue-deep); }
+.entry-date { font-size: .82rem; color: #888; }
+.jcells-grid {
+  display: grid; grid-template-columns: repeat(2,1fr); gap: 10px;
+  margin-bottom: 14px;
+}
+@media(max-width:500px){ .jcells-grid { grid-template-columns: 1fr; } }
+.jcell { border: 1.5px solid #e0eef8; border-radius: 12px; overflow: hidden; }
+.jcell-hd { padding: 7px 10px; font-size: .78rem; font-weight: 900; color: #fff; }
+.jcell-body { padding: 9px 10px; font-size: .84rem; color: #444; line-height: 1.6; min-height: 36px; }
+.jcell-body img { max-width: 100%; border-radius: 6px; margin-top: 4px; display: block; }
+.jcell-empty { color: #bbb; font-style: italic; }
+.jsummary {
+  background: linear-gradient(135deg,#e8f4fd,#f0e8ff);
+  border-left: 5px solid var(--blue-deep);
+  border-radius: 0 12px 12px 0;
+  padding: 12px 16px; margin-top: 4px;
+  font-size: .88rem; color: #444; line-height: 1.7;
+}
+.journal-empty {
+  text-align: center; padding: 50px 20px;
+  color: #aaa; font-size: .95rem; line-height: 2;
+}
+.btn-journal { background: linear-gradient(135deg,var(--purple),#9c27b0); color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- ══ Header ══ -->
+<header class="top-header">
+  <div class="header-inner">
+    <div class="hd-logo">
+      <span class="icon">🚄</span>
+      <div>
+        <div class="hd-title">感恩列車</div>
+        <div class="hd-sub">🌟 幸福站 — 感恩練習</div>
+      </div>
+    </div>
+    <div class="hd-right">
+      <div class="prog-wrap">
+        <div class="prog-label" id="progLabel">完成進度：0%</div>
+        <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+        <span style="font-size:.72rem;opacity:.85;">🎙</span>
+        <select class="lang-sel" id="speechLang">
+          <option value="zh-HK">廣東話</option>
+          <option value="zh-TW">普通話(繁)</option>
+          <option value="zh-CN">普通話(簡)</option>
+          <option value="en-US">English</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</header>
+<div id="recBanner">🔴 錄音中，請說話……（再按 🎙 停止 / 按 Esc 取消）</div>
+
+<main class="wrapper">
+
+  <div class="no-speech" id="noSpeechNote">
+    ⚠️ 你的瀏覽器不支援語音輸入，請改用 Chrome 或 Edge 瀏覽器以啟用 🎙 錄音功能。
+  </div>
+
+  <!-- 封面 -->
+  <div class="cover-card">
+    <div class="train-big">🚄</div>
+    <h1>感恩列車</h1>
+    <p class="sub">幸福環狀線 · 幸福站練習手冊</p>
+    <div class="name-row">
+      <span>我</span>
+      <input class="name-input" id="studentName" type="text" placeholder="（填上你的名字）" oninput="updateProgress()">
+      <span>的感恩旅程紀錄</span>
+    </div>
+    <div class="date-row">
+      <span>📅 日期：</span>
+      <input class="date-input" id="entryDate" type="date" oninput="updateProgress()">
+    </div>
+    <div class="cover-badge">🌟 幸福環狀線 · 第十站</div>
+  </div>
+
+  <!-- 區段標題 -->
+  <div class="section-hd">
+    <h2>🌟 幸福站 — 細心留意身邊值得感恩的事</h2>
+    <p>把你用六感發現到的美好事物，寫下來、說出來，或者畫出來！</p>
+  </div>
+  <div class="intro-card">
+    讓我們每天花五至十分鐘，細心留意身邊值得感恩的事，建立感恩的習慣。<br>
+    每個格子都有三種方式回答：<strong>✏️ 打字</strong>、<strong>🎙 錄音轉文字</strong>、<strong>🖌 畫畫</strong>——選你最喜歡的方式！
+  </div>
+
+  <!-- 六格 -->
+  <div class="cells-grid">
+
+    <!-- ① Seeing -->
+    <div class="cell c1">
+      <div class="cell-head">
+        <h3>👁 Seeing · 睇</h3>
+        <p>看到甚麼人/物/事令你愉快/平靜？你擁有甚麼？</p>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'p-txt-1')">✏️ 打字</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-mic-1')">🎙 錄音</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-draw-1')">🖌 畫畫</button>
+      </div>
+      <div id="p-txt-1" class="panel panel-text active">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_seeing" placeholder="寫下我的觀察……" oninput="updateProgress()"></textarea>
+        </div>
+        <div class="feel-row">
+          <span style="font-size:.75rem;color:#888;align-self:center;">我覺得：</span>
+          <span class="feel-chip" style="color:#1e88e5;" onclick="toggleFeel(this)"><span>平靜</span></span>
+          <span class="feel-chip" style="color:#e91e8c;" onclick="toggleFeel(this)"><span>開心</span></span>
+          <span class="feel-chip" style="color:#f57c00;" onclick="toggleFeel(this)"><span>興奮</span></span>
+        </div>
+      </div>
+      <div id="p-mic-1" class="panel panel-text">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_seeing_v" placeholder="按右上角 🎙 開始錄音，說話後文字自動出現……" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+      <div id="p-draw-1" class="panel panel-draw">
+        <div class="draw-toolbar" id="dtb-1"></div>
+        <div class="canvas-wrap" id="cwrap-1">
+          <canvas id="cv-1"></canvas>
+          <div class="canvas-hint">🖌 在這裡畫出你的感恩</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② Hearing -->
+    <div class="cell c2">
+      <div class="cell-head">
+        <h3>👂 Hearing · 聽</h3>
+        <p>你享受甚麼聲音？聽過哪些令你感恩的說話？</p>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'p-txt-2')">✏️ 打字</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-mic-2')">🎙 錄音</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-draw-2')">🖌 畫畫</button>
+      </div>
+      <div id="p-txt-2" class="panel panel-text active">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_hearing" placeholder="寫下我的觀察……" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+      <div id="p-mic-2" class="panel panel-text">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_hearing_v" placeholder="按右上角 🎙 開始錄音……" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+      <div id="p-draw-2" class="panel panel-draw">
+        <div class="draw-toolbar" id="dtb-2"></div>
+        <div class="canvas-wrap" id="cwrap-2">
+          <canvas id="cv-2"></canvas>
+          <div class="canvas-hint">🖌 在這裡畫出你的感恩</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ Smelling -->
+    <div class="cell c3">
+      <div class="cell-head">
+        <h3>👃 Smelling · 聞</h3>
+        <p>聞到甚麼氣味令你感到愉快/平靜？</p>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'p-txt-3')">✏️ 打字</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-mic-3')">🎙 錄音</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-draw-3')">🖌 畫畫</button>
+      </div>
+      <div id="p-txt-3" class="panel panel-text active">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_smell" placeholder="寫下我的觀察……" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+      <div id="p-mic-3" class="panel panel-text">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_smell_v" placeholder="按右上角 🎙 開始錄音……" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+      <div id="p-draw-3" class="panel panel-draw">
+        <div class="draw-toolbar" id="dtb-3"></div>
+        <div class="canvas-wrap" id="cwrap-3">
+          <canvas id="cv-3"></canvas>
+          <div class="canvas-hint">🖌 在這裡畫出你的感恩</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ④ Tasting -->
+    <div class="cell c4">
+      <div class="cell-head">
+        <h3>😋 Tasting · 食</h3>
+        <p>吃到甚麼味道？感激背後付出的哪些人？</p>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'p-txt-4')">✏️ 打字</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-mic-4')">🎙 錄音</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-draw-4')">🖌 畫畫</button>
+      </div>
+      <div id="p-txt-4" class="panel panel-text active">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_taste" placeholder="寫下我的觀察……" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+      <div id="p-mic-4" class="panel panel-text">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_taste_v" placeholder="按右上角 🎙 開始錄音……" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+      <div id="p-draw-4" class="panel panel-draw">
+        <div class="draw-toolbar" id="dtb-4"></div>
+        <div class="canvas-wrap" id="cwrap-4">
+          <canvas id="cv-4"></canvas>
+          <div class="canvas-hint">🖌 在這裡畫出你的感恩</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑤ Touching -->
+    <div class="cell c5">
+      <div class="cell-head">
+        <h3>🤲 Touching · 觸</h3>
+        <p>觸摸到哪些質感令你感到愉快/平靜？</p>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'p-txt-5')">✏️ 打字</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-mic-5')">🎙 錄音</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-draw-5')">🖌 畫畫</button>
+      </div>
+      <div id="p-txt-5" class="panel panel-text active">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_touch" placeholder="寫下我的觀察……" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+      <div id="p-mic-5" class="panel panel-text">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_touch_v" placeholder="按右上角 🎙 開始錄音……" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+      <div id="p-draw-5" class="panel panel-draw">
+        <div class="draw-toolbar" id="dtb-5"></div>
+        <div class="canvas-wrap" id="cwrap-5">
+          <canvas id="cv-5"></canvas>
+          <div class="canvas-hint">🖌 在這裡畫出你的感恩</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑥ Doing -->
+    <div class="cell c6">
+      <div class="cell-head">
+        <h3>💡 Doing · 做</h3>
+        <p>感恩自己用了甚麼知識、技能和態度？</p>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'p-txt-6')">✏️ 打字</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-mic-6')">🎙 錄音</button>
+        <button class="tab-btn"        onclick="switchTab(this,'p-draw-6')">🖌 畫畫</button>
+      </div>
+      <div id="p-txt-6" class="panel panel-text active">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_doing" placeholder="寫下我的觀察……" oninput="updateProgress()"></textarea>
+        </div>
+        <div class="feel-row">
+          <span style="font-size:.75rem;color:#888;align-self:center;">我覺得：</span>
+          <span class="feel-chip" style="color:#2e7d32;" onclick="toggleFeel(this)"><span>被愛</span></span>
+          <span class="feel-chip" style="color:#f57c00;" onclick="toggleFeel(this)"><span>幸福</span></span>
+          <span class="feel-chip" style="color:#7b1fa2;" onclick="toggleFeel(this)"><span>舒適</span></span>
+        </div>
+      </div>
+      <div id="p-mic-6" class="panel panel-text">
+        <div class="mic-wrap-ta">
+          <textarea id="ta_doing_v" placeholder="按右上角 🎙 開始錄音……" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+      <div id="p-draw-6" class="panel panel-draw">
+        <div class="draw-toolbar" id="dtb-6"></div>
+        <div class="canvas-wrap" id="cwrap-6">
+          <canvas id="cv-6"></canvas>
+          <div class="canvas-hint">🖌 在這裡畫出你的感恩</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /cells-grid -->
+
+  <!-- 總結 -->
+  <div class="summary-card">
+    <h3>🙏 我會向誰表達謝意？</h3>
+    <div class="mic-wrap-ta" style="margin-bottom:16px;">
+      <textarea id="ta_who" class="summary-ta" placeholder="我想感謝……" oninput="updateProgress()"></textarea>
+    </div>
+    <h3>💬 我會如何表達謝意？（點選）</h3>
+    <div class="express-group">
+      <span class="express-chip e1" onclick="toggleExpress(this)">✏️ 寫/畫出來</span>
+      <span class="express-chip e2" onclick="toggleExpress(this)">🗣 口頭分享</span>
+      <span class="express-chip e3" onclick="toggleExpress(this)">🤝 其他行動</span>
+    </div>
+    <div class="reflection">
+      🌟 讓我們每天花五至十分鐘，細心留意身邊值得感恩的事，建立感恩的習慣。<br><br>
+      <strong>感恩讓我們……</strong><br>
+      提升正面情緒 · 提升生活滿意度 · 有助建立緊密的人際關係 · 提升樂觀的心態
+    </div>
+  </div>
+
+  <div style="text-align:center;color:#bbb;font-size:.73rem;padding-bottom:6px;">
+    © 教育局教育心理服務(新界西)組 二零二四年 · 版權為教育局所有，歡迎作非牟利教育用途
+  </div>
+
+</main>
+
+<div class="action-bar">
+  <button class="btn btn-save"    onclick="saveAll()">💾 儲存進度</button>
+  <button class="btn btn-load"    onclick="document.getElementById('fileInput').click()">📂 載入進度</button>
+  <button class="btn btn-journal" onclick="openJournal()">📅 感恩日誌</button>
+  <button class="btn btn-print"   onclick="window.print()">🖨 列印</button>
+</div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleLoad(event)">
+
+<!-- ══ 感恩日誌 Overlay ══ -->
+<div class="journal-overlay" id="journalOverlay">
+  <div class="journal-box">
+    <div class="journal-hd">
+      <span style="font-size:1.5rem;">📅</span>
+      <h2>我的感恩日誌</h2>
+      <button class="journal-close" onclick="closeJournal()" title="關閉">✕</button>
+    </div>
+    <div class="journal-nav" id="journalNav" style="display:none;">
+      <button class="jnav-btn" id="jPrev" onclick="jMove(-1)" title="上一筆">◀</button>
+      <div class="jnav-info" id="jNavInfo"></div>
+      <button class="jnav-btn" id="jNext" onclick="jMove(1)" title="下一筆">▶</button>
+      <button class="jnav-del" onclick="jDelete()" title="刪除這筆紀錄">🗑 刪除此筆</button>
+    </div>
+    <div class="journal-body" id="journalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   畫版設定
+══════════════════════════════════════════ */
+const PALETTE = [
+  '#111111','#e53935','#f57c00','#f5c518',
+  '#43a047','#1e88e5','#7b1fa2','#e91e8c',
+  '#00897b','#795548','#90a4ae','#ffffff'
+];
+const BRUSH_SIZES = [
+  { outer:14, inner:3,  label:'細 3px'  },
+  { outer:18, inner:6,  label:'中 6px'  },
+  { outer:24, inner:12, label:'粗 12px' },
+  { outer:30, inner:20, label:'特粗 20px'},
+];
+
+// 每個格子的畫板狀態
+const CS = {}; // canvas states
+
+function buildToolbar(idx) {
+  const tb = document.getElementById('dtb-' + idx);
+  tb.innerHTML = '';
+  CS[idx] = { color: '#111111', size: 3, eraser: false, drawing: false, lx: 0, ly: 0 };
+  const st = CS[idx];
+
+  /* 顏色板 */
+  const pal = document.createElement('div');
+  pal.className = 'color-palette';
+  PALETTE.forEach((hex, ci) => {
+    const dot = document.createElement('div');
+    dot.className = 'color-dot' + (ci === 0 ? ' active' : '');
+    dot.style.background = hex;
+    if (hex === '#ffffff') dot.style.boxShadow = '0 0 0 1.5px #bbb';
+    dot.title = hex;
+    dot.addEventListener('click', () => {
+      pal.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+      st.color = hex; st.eraser = false;
+      eraserBtn.classList.remove('active');
+    });
+    pal.appendChild(dot);
+  });
+  tb.appendChild(pal);
+
+  /* 分隔 */
+  const sep1 = document.createElement('div'); sep1.className = 'tool-sep'; tb.appendChild(sep1);
+
+  /* 畫筆大小 */
+  const sg = document.createElement('div'); sg.className = 'size-group';
+  BRUSH_SIZES.forEach((bs, si) => {
+    const btn = document.createElement('button');
+    btn.className = 'size-btn' + (si === 0 ? ' active' : '');
+    btn.title     = bs.label;
+    btn.style.cssText = `width:${bs.outer}px;height:${bs.outer}px;`;
+    const inn = document.createElement('div');
+    inn.className = 'dot-inner';
+    inn.style.cssText = `width:${bs.inner}px;height:${bs.inner}px;`;
+    btn.appendChild(inn);
+    btn.addEventListener('click', () => {
+      sg.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      st.size = bs.inner; st.eraser = false;
+      eraserBtn.classList.remove('active');
+    });
+    sg.appendChild(btn);
+  });
+  tb.appendChild(sg);
+
+  /* 分隔 */
+  const sep2 = document.createElement('div'); sep2.className = 'tool-sep'; tb.appendChild(sep2);
+
+  /* 橡皮擦 */
+  const eraserBtn = document.createElement('button');
+  eraserBtn.className   = 'tool-btn';
+  eraserBtn.textContent = '🧹 橡皮擦';
+  eraserBtn.addEventListener('click', () => {
+    st.eraser = !st.eraser;
+    eraserBtn.classList.toggle('active', st.eraser);
+  });
+  tb.appendChild(eraserBtn);
+
+  /* 清除全部 */
+  const clearBtn = document.createElement('button');
+  clearBtn.className   = 'tool-btn danger';
+  clearBtn.textContent = '🗑 清除';
+  clearBtn.addEventListener('click', () => {
+    if (!confirm('確定清除整個畫版嗎？')) return;
+    const cv = document.getElementById('cv-' + idx);
+    cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
+    const hint = document.querySelector('#cwrap-' + idx + ' .canvas-hint');
+    if (hint) hint.style.display = '';
+  });
+  tb.appendChild(clearBtn);
+}
+
+function initCanvas(idx) {
+  buildToolbar(idx);
+  const cwrap = document.getElementById('cwrap-' + idx);
+  const cv    = document.getElementById('cv-' + idx);
+  const hint  = cwrap.querySelector('.canvas-hint');
+  const st    = CS[idx];
+
+  /* ── 初始化 canvas 尺寸：在切到畫版分頁後呼叫 ── */
+  function setupCanvas() {
+    const w = cwrap.clientWidth;
+    const h = cwrap.clientHeight;
+    if (!w || !h) return; // 容器尚無尺寸
+
+    const dpr = window.devicePixelRatio || 1;
+    const pw  = Math.round(w * dpr);
+    const ph  = Math.round(h * dpr);
+
+    // 尺寸已一致則不重設（避免清畫面）
+    if (cv.dataset.ready && cv.width === pw && cv.height === ph) return;
+
+    // 先儲存現有圖像
+    let saved = null;
+    if (cv.dataset.ready) { try { saved = cv.toDataURL(); } catch(e){} }
+
+    // 設定 canvas 實體像素
+    cv.width  = pw;
+    cv.height = ph;
+    // 設定 CSS 顯示尺寸（精確符合容器，避免拉伸）
+    cv.style.width  = w + 'px';
+    cv.style.height = h + 'px';
+
+    // 套用 DPR 縮放（之後所有 ctx 座標皆用 CSS px）
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+    cv.dataset.ready = '1';
+
+    // 還原舊圖像
+    if (saved) {
+      const img = new Image();
+      img.onload = () => ctx.drawImage(img, 0, 0, w, h);
+      img.src = saved;
+    }
+  }
+
+  // 掛到 canvas element 上，讓 switchTab 可以呼叫
+  cv._setup = setupCanvas;
+
+  /* ── 座標轉換（回傳 CSS px，ctx 已含 DPR scale） ── */
+  function pos(e) {
+    const r = cv.getBoundingClientRect();
+    const s = e.touches ? e.touches[0] : e;
+    return { x: s.clientX - r.left, y: s.clientY - r.top };
+  }
+
+  /* ── 畫線 ── */
+  function paint(x, y) {
+    const ctx = cv.getContext('2d');
+    const erase = st.eraser;
+    ctx.globalCompositeOperation = erase ? 'destination-out' : 'source-over';
+    ctx.beginPath();
+    ctx.moveTo(st.lx, st.ly);
+    ctx.lineTo(x, y);
+    ctx.lineWidth   = erase ? st.size * 4 : st.size;
+    ctx.lineCap     = 'round';
+    ctx.lineJoin    = 'round';
+    ctx.strokeStyle = erase ? 'rgba(0,0,0,1)' : st.color;
+    ctx.stroke();
+    ctx.globalCompositeOperation = 'source-over';
+    st.lx = x; st.ly = y;
+  }
+
+  /* ── 事件處理 ── */
+  function onDown(e) {
+    e.preventDefault();
+    // 若還未初始化（例如使用者未切分頁直接點擊），立即嘗試
+    if (!cv.dataset.ready) setupCanvas();
+    if (!cv.dataset.ready) return; // 容器仍無尺寸，放棄
+
+    if (hint) hint.style.display = 'none';
+    const {x, y} = pos(e);
+    st.drawing = true; st.lx = x; st.ly = y;
+
+    // 畫單點（純 click 不拖動時仍有墨水）
+    const ctx = cv.getContext('2d');
+    const erase = st.eraser;
+    ctx.globalCompositeOperation = erase ? 'destination-out' : 'source-over';
+    ctx.beginPath();
+    ctx.arc(x, y, Math.max(0.5, erase ? st.size * 2 : st.size / 2), 0, Math.PI * 2);
+    ctx.fillStyle = erase ? 'rgba(0,0,0,1)' : st.color;
+    ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function onMove(e) {
+    if (!st.drawing) return;
+    e.preventDefault();
+    const {x, y} = pos(e);
+    paint(x, y);
+  }
+
+  function onUp() { st.drawing = false; }
+
+  cv.addEventListener('mousedown',  onDown);
+  cv.addEventListener('mousemove',  onMove);
+  cv.addEventListener('mouseup',    onUp);
+  cv.addEventListener('mouseleave', onUp);
+  cv.addEventListener('touchstart', onDown, { passive: false });
+  cv.addEventListener('touchmove',  onMove, { passive: false });
+  cv.addEventListener('touchend',   onUp);
+}
+
+for (let i = 1; i <= 6; i++) initCanvas(i);
+
+/* ══════════════════════════════════════════
+   分頁切換
+══════════════════════════════════════════ */
+function switchTab(btn, panelId) {
+  const cell = btn.closest('.cell');
+  cell.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  cell.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+
+  // 切到畫版分頁時，用 rAF 等瀏覽器完成 layout 後再初始化 canvas
+  if (panelId.startsWith('p-draw-')) {
+    const idx = panelId.split('-')[2];
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {           // 雙 rAF 確保 layout 已完成
+        const cv = document.getElementById('cv-' + idx);
+        if (cv && cv._setup) cv._setup();
+      });
+    });
+  }
+}
+
+/* ══════════════════════════════════════════
+   感覺 / 表達方式
+══════════════════════════════════════════ */
+function toggleFeel(el)    { el.classList.toggle('sel'); updateProgress(); }
+function toggleExpress(el) { el.classList.toggle('sel'); updateProgress(); }
+
+/* ══════════════════════════════════════════
+   進度
+══════════════════════════════════════════ */
+const ALL_TA = [
+  'studentName','entryDate',
+  'ta_seeing','ta_hearing','ta_smell','ta_taste','ta_touch','ta_doing',
+  'ta_seeing_v','ta_hearing_v','ta_smell_v','ta_taste_v','ta_touch_v','ta_doing_v',
+  'ta_who'
+];
+function updateProgress() {
+  const filled = ALL_TA.filter(id => {
+    const el = document.getElementById(id);
+    return el && el.value.trim().length > 0;
+  }).length;
+  const pct = Math.min(100, Math.round(filled / ALL_TA.length * 100));
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progLabel').textContent = '完成進度：' + pct + '%';
+}
+
+/* ══════════════════════════════════════════
+   儲存 / 載入
+══════════════════════════════════════════ */
+function saveAll() {
+  const data = { _v: 3 };
+  ALL_TA.forEach(id => { const el = document.getElementById(id); if (el) data[id] = el.value; });
+
+  // chips
+  data._chips = Array.from(document.querySelectorAll('.feel-chip,.express-chip'))
+                     .map(c => c.classList.contains('sel'));
+
+  // canvases
+  data._cv = {};
+  for (let i = 1; i <= 6; i++) {
+    const cv = document.getElementById('cv-' + i);
+    if (cv && cv.width > 0) try { data._cv[i] = cv.toDataURL('image/png'); } catch(e){}
+  }
+
+  // 同時存入感恩日誌（localStorage）
+  saveToJournal(data);
+
+  const blob = new Blob([JSON.stringify(data)], { type:'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), { href: url, download: '幸福站_' + (document.getElementById('studentName').value || '學生') + '_' + (data.entryDate || 'nodate') + '.json' });
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ 進度已儲存！已加入感恩日誌 📅');
+}
+
+function handleLoad(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      ALL_TA.forEach(id => { const el = document.getElementById(id); if (el && data[id] !== undefined) el.value = data[id]; });
+      if (data._chips) {
+        const chips = document.querySelectorAll('.feel-chip,.express-chip');
+        chips.forEach((c,i) => c.classList.toggle('sel', !!data._chips[i]));
+      }
+      if (data._cv) {
+        Object.entries(data._cv).forEach(([i, src]) => {
+          const cw = document.getElementById('cwrap-' + i);
+          const cv = document.getElementById('cv-' + i);
+          if (!cv || !src) return;
+          const dpr = window.devicePixelRatio || 1;
+          const w   = cw.offsetWidth || 280;
+          const h   = Math.max(cw.offsetHeight, 160);
+          if (cv.width === 0) { cv.width=w*dpr; cv.height=h*dpr; cv.style.width=w+'px'; cv.style.height=h+'px'; cv.getContext('2d').scale(dpr,dpr); }
+          const img = new Image();
+          img.onload = () => { cv.getContext('2d').drawImage(img,0,0,w,h); const hint=cw.querySelector('.canvas-hint'); if(hint) hint.style.display='none'; };
+          img.src = src;
+        });
+      }
+      updateProgress();
+      showToast('📂 進度已載入！');
+    } catch(err) { showToast('❌ 載入失敗，請確認檔案格式'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+/* ══════════════════════════════════════════
+   Toast
+══════════════════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ══════════════════════════════════════════
+   🎙 語音輸入
+══════════════════════════════════════════ */
+(function initVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { document.getElementById('noSpeechNote').style.display = 'block'; return; }
+
+  let rec = null, activeBtn = null, activeField = null, baseText = '', interim = '';
+  const banner = document.getElementById('recBanner');
+  const getLang = () => document.getElementById('speechLang').value;
+
+  function stopRec() {
+    if (rec) { try { rec.stop(); } catch(e){} rec = null; }
+    if (activeBtn) activeBtn.classList.remove('recording');
+    activeBtn = null; activeField = null;
+    banner.classList.remove('on');
+  }
+
+  function startRec(btn, field) {
+    if (activeBtn === btn) { stopRec(); return; }
+    if (activeBtn) stopRec();
+    activeBtn = btn; activeField = field;
+    baseText = field.value; interim = '';
+    btn.classList.add('recording'); banner.classList.add('on');
+
+    rec = new SR();
+    rec.lang = getLang(); rec.interimResults = true; rec.continuous = true;
+
+    rec.onresult = e => {
+      let fin = ''; interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) fin += t; else interim += t;
+      }
+      if (fin) { if (baseText && !/[\n\s]$/.test(baseText)) baseText += ' '; baseText += fin; }
+      field.value = baseText + interim;
+      field.dispatchEvent(new Event('input'));
+    };
+
+    rec.onspeechend = () => {
+      if (interim) { if (baseText && !/[\n\s]$/.test(baseText)) baseText += ' '; baseText += interim; interim = ''; }
+      if (activeBtn === btn) try { rec.start(); } catch(e){}
+    };
+
+    rec.onerror = e => {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { showToast('❌ 請允許麥克風存取權限'); stopRec(); }
+      else if (e.error !== 'no-speech' && e.error !== 'aborted') { if (activeBtn === btn) try { rec.start(); } catch(er){} }
+    };
+
+    rec.onend = () => { if (activeBtn === btn) try { rec.start(); } catch(e) { stopRec(); } };
+
+    try { rec.start(); } catch(e) { showToast('❌ 無法啟動錄音'); stopRec(); }
+  }
+
+  // 注入 🎙 按鈕到所有 .mic-wrap-ta
+  document.querySelectorAll('.mic-wrap-ta').forEach(wrap => {
+    const ta = wrap.querySelector('textarea');
+    if (!ta || wrap.querySelector('.mic-btn-ta')) return;
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'mic-btn-ta';
+    btn.title = '按下開始錄音（再按停止）'; btn.textContent = '🎙';
+    wrap.appendChild(btn);
+    btn.addEventListener('click', () => startRec(btn, ta));
+  });
+
+  document.getElementById('speechLang').addEventListener('change', () => {
+    if (activeBtn && activeField) { const b=activeBtn,f=activeField; stopRec(); setTimeout(()=>startRec(b,f),150); }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') stopRec(); });
+})();
+
+/* ══════════════════════════════════════════
+   📅 感恩日誌（localStorage）
+══════════════════════════════════════════ */
+const JOURNAL_KEY = 'gratitude_journal_v1';
+
+function getJournal() {
+  try { return JSON.parse(localStorage.getItem(JOURNAL_KEY) || '[]'); } catch(e) { return []; }
+}
+function setJournal(arr) {
+  try { localStorage.setItem(JOURNAL_KEY, JSON.stringify(arr)); } catch(e) {
+    showToast('⚠️ 瀏覽器儲存空間已滿，請刪除部分舊紀錄');
+  }
+}
+
+function saveToJournal(data) {
+  const arr = getJournal();
+  const dateKey = data.entryDate || new Date().toISOString().slice(0, 10);
+  const entry = Object.assign({}, data, { entryDate: dateKey, savedAt: Date.now() });
+  // 同日期取代舊紀錄
+  const idx = arr.findIndex(e => e.entryDate === dateKey);
+  if (idx >= 0) arr[idx] = entry; else arr.unshift(entry);
+  // 日期由新到舊排序
+  arr.sort((a, b) => (b.entryDate || '').localeCompare(a.entryDate || ''));
+  // 最多保留 90 筆
+  if (arr.length > 90) arr.length = 90;
+  setJournal(arr);
+}
+
+let jIdx = 0;
+
+function openJournal() {
+  jIdx = 0;
+  renderJournal(getJournal());
+  document.getElementById('journalOverlay').classList.add('open');
+}
+function closeJournal() {
+  document.getElementById('journalOverlay').classList.remove('open');
+}
+function jMove(dir) {
+  const arr = getJournal();
+  jIdx = Math.max(0, Math.min(arr.length - 1, jIdx + dir));
+  renderJournal(arr);
+}
+function jDelete() {
+  const arr = getJournal();
+  if (!arr.length) return;
+  const e = arr[jIdx];
+  const label = e.entryDate
+    ? new Date(e.entryDate + 'T12:00:00').toLocaleDateString('zh-HK',{year:'numeric',month:'long',day:'numeric'})
+    : '此筆';
+  if (!confirm('確定刪除「' + label + '」的感恩紀錄嗎？')) return;
+  arr.splice(jIdx, 1);
+  setJournal(arr);
+  jIdx = Math.max(0, Math.min(arr.length - 1, jIdx));
+  renderJournal(arr);
+}
+
+const JCELL_META = [
+  { label:'👁 Seeing · 睇',    color:'linear-gradient(135deg,#1565c0,#1e88e5)', fields:['ta_seeing','ta_seeing_v'],   cv:1 },
+  { label:'👂 Hearing · 聽',   color:'linear-gradient(135deg,#00695c,#00897b)', fields:['ta_hearing','ta_hearing_v'], cv:2 },
+  { label:'👃 Smelling · 聞',  color:'linear-gradient(135deg,#ad1457,#e91e8c)', fields:['ta_smell','ta_smell_v'],     cv:3 },
+  { label:'😋 Tasting · 食',   color:'linear-gradient(135deg,#e65100,#f57c00)', fields:['ta_taste','ta_taste_v'],     cv:4 },
+  { label:'🤲 Touching · 觸',  color:'linear-gradient(135deg,#6a1b9a,#9c27b0)', fields:['ta_touch','ta_touch_v'],     cv:5 },
+  { label:'💡 Doing · 做',     color:'linear-gradient(135deg,#2e7d32,#43a047)', fields:['ta_doing','ta_doing_v'],     cv:6 },
+];
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderJournal(arr) {
+  const nav  = document.getElementById('journalNav');
+  const info = document.getElementById('jNavInfo');
+  const body = document.getElementById('journalBody');
+  const prev = document.getElementById('jPrev');
+  const next = document.getElementById('jNext');
+
+  if (!arr.length) {
+    nav.style.display = 'none';
+    body.innerHTML = `<div class="journal-empty">
+      📭 尚未有任何感恩紀錄<br>
+      <small>完成練習後按「💾 儲存進度」<br>你的紀錄就會保存到日誌裡！</small>
+    </div>`;
+    return;
+  }
+
+  nav.style.display = 'flex';
+  info.textContent  = `第 ${jIdx + 1} 筆 / 共 ${arr.length} 筆`;
+  prev.disabled = (jIdx <= 0);
+  next.disabled = (jIdx >= arr.length - 1);
+
+  const e = arr[jIdx];
+  const dateStr = e.entryDate
+    ? new Date(e.entryDate + 'T12:00:00').toLocaleDateString('zh-HK',
+        { year:'numeric', month:'long', day:'numeric', weekday:'long' })
+    : '日期不詳';
+
+  let html = `
+    <div class="journal-entry-hd">
+      <span class="entry-badge">🌟 幸福站</span>
+      <span class="entry-name">${escHtml(e.studentName || '同學')}</span>
+      <span class="entry-date">${dateStr}</span>
+    </div>
+    <div class="jcells-grid">`;
+
+  JCELL_META.forEach(m => {
+    const text = m.fields.map(f => (e[f] || '').trim()).filter(Boolean).join('\n').trim();
+    const cvSrc = e._cv && e._cv[m.cv];
+    html += `<div class="jcell">
+      <div class="jcell-hd" style="background:${m.color};">${m.label}</div>
+      <div class="jcell-body">`;
+    if (text)  html += escHtml(text).replace(/\n/g, '<br>');
+    if (cvSrc) html += `<img src="${escHtml(cvSrc)}" alt="畫版">`;
+    if (!text && !cvSrc) html += '<span class="jcell-empty">（未填寫）</span>';
+    html += `</div></div>`;
+  });
+
+  html += `</div>`;
+
+  const who = (e.ta_who || '').trim();
+  if (who) {
+    html += `<div class="jsummary">🙏 <strong>感謝對象：</strong>${escHtml(who)}</div>`;
+  }
+
+  body.innerHTML = html;
+}
+
+// 鍵盤導航 + 背景點擊關閉
+document.addEventListener('keydown', e => {
+  const ov = document.getElementById('journalOverlay');
+  if (!ov.classList.contains('open')) return;
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); jMove(-1); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); jMove(1);  }
+  if (e.key === 'Escape')     closeJournal();
+});
+document.getElementById('journalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('journalOverlay')) closeJournal();
+});
+
+// 預設今天日期
+(function setDefaultDate() {
+  const el = document.getElementById('entryDate');
+  if (el && !el.value) {
+    const today = new Date();
+    const yyyy  = today.getFullYear();
+    const mm    = String(today.getMonth() + 1).padStart(2, '0');
+    const dd    = String(today.getDate()).padStart(2, '0');
+    el.value = `${yyyy}-${mm}-${dd}`;
+  }
+})();
+
+updateProgress();
+</script>
+</body>
+</html>
